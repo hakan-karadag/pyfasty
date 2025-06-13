@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyfasty"
-version = "0.1.0b1"
+version = "0.1.0b2"
 description = "🚀 Native C-powered Python utilities: magic registry, auto events, premium console - Code 10x faster!"
 readme = "README.md"
 license = {file = "LICENCE.txt"}

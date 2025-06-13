@@ -35,7 +35,7 @@ extern int g_pyfasty_attr_cache_size;
 #endif
 
 /* Version du module */
-#define PYFASTY_VERSION "0.1.0b1"
+#define PYFASTY_VERSION "0.1.0b2"
 
 /* FORWARD DECLARATIONS : Éviter les dépendances circulaires */
 typedef struct PyFastyBaseObject PyFastyBaseObject;

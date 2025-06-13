@@ -132,9 +132,13 @@ console.info("App started")
 
 ## 🚀 **Quick Start**
 
+### 📦 **Installation**
+
 ```bash
 pip install pyfasty
 ```
+
+**That's it!** PyFasty is now ready to use.
 
 **✅ Native C Objects - Direct Import**
 ```python
