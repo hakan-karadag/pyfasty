@@ -1,0 +1,45 @@
+# Include documentation
+include README.md
+include README.fr.md
+include LICENSE-APACHE
+include MANIFEST.in
+include pyproject.toml
+include setup.py
+include PYPI_DEPLOYMENT.md
+
+# Include source files
+recursive-include src *.c *.h
+recursive-include pyfasty *.py *.pyi
+
+# Include test files
+recursive-include test *.py
+recursive-include tests *.py
+
+# Include assets if any
+recursive-include assets *.png *.jpg *.svg *.gif
+
+# Include configuration files
+include .github/workflows/*.yml
+
+# Exclude unnecessary files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude *.so
+global-exclude .DS_Store
+global-exclude .git*
+global-exclude *.orig
+global-exclude *.swp
+global-exclude *.tmp
+
+# Exclude development and build artifacts
+prune build
+prune dist
+prune *.egg-info
+exclude debug_*.py
+exclude test_*.py
+exclude *_debug.py
+exclude simple_*.py
+exclude minimal_*.py
+exclude run_*.py 

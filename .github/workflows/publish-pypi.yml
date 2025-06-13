@@ -1,0 +1,111 @@
+name: 🚀 Publish to PyPI
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'testpypi'
+        type: choice
+        options:
+          - testpypi
+          - pypi
+
+jobs:
+  build:
+    name: 🏗️ Build Package
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+        
+    - name: 🔧 Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build setuptools wheel twine
+        
+    - name: 🏗️ Build package
+      run: |
+        python -m build
+        
+    - name: 📋 List dist files
+      run: |
+        ls -la dist/
+        
+    - name: 💾 Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist-files
+        path: dist/
+
+  publish-testpypi:
+    name: 🧪 Publish to TestPyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'testpypi'
+    
+    steps:
+    - name: 📥 Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist-files
+        path: dist/
+        
+    - name: 🧪 Publish to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository-url: https://test.pypi.org/legacy/
+
+  publish-pypi:
+    name: 🚀 Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'release' && github.event.action == 'published') ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'pypi')
+    
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pyfasty
+      
+    permissions:
+      id-token: write  # Pour trusted publishing
+      
+    steps:
+    - name: 📥 Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist-files
+        path: dist/
+        
+    - name: 🚀 Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+
+  notify-success:
+    name: 🎉 Notify Success
+    needs: [build, publish-pypi]
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: 🎊 Success Notification
+      run: |
+        echo "🎉 PyFasty has been successfully published to PyPI!"
+        echo "📦 Package URL: https://pypi.org/project/pyfasty/"
+        echo "📥 Install with: pip install pyfasty" 

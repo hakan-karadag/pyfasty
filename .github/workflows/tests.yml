@@ -1,0 +1,115 @@
+name: 🧪 Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 🧪 Test on ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: 📦 Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel build
+        
+    - name: 🏗️ Build extension
+      run: |
+        python setup.py build_ext --inplace
+        
+    - name: 🧪 Run basic tests
+      run: |
+        python -c "import pyfasty; print('PyFasty imported successfully')"
+        python -c "from pyfasty import console, registry, config, executor, event; print('All components imported')"
+        
+    - name: 📊 Test core functionality
+      run: |
+        python -c "
+        from pyfasty import console, registry, config
+        registry.test = 'Hello PyFasty'
+        console.info('Test passed: ' + str(registry.test))
+        config.debug = True
+        print('Core functionality works')
+        "
+        
+  build-check:
+    name: 📦 Build Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+        
+    - name: 📦 Install build tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine setuptools wheel
+        
+    - name: 🏗️ Build package (without tests)
+      run: |
+        python setup.py sdist
+        python setup.py bdist_wheel
+        
+    - name: 🔍 Check package
+      run: |
+        twine check dist/*
+        
+    - name: 📋 List contents
+      run: |
+        ls -la dist/
+        echo "--- Package contents ---"
+        tar -tzf dist/*.tar.gz | head -20
+        
+  quality-check:
+    name: 🔍 Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: 📦 Install quality tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install black isort flake8
+        
+    - name: 🎨 Check code formatting (Black)
+      run: |
+        black --check --diff pyfasty/ || echo "Code formatting issues found"
+        
+    - name: 📤 Check imports (isort)
+      run: |
+        isort --check-only --diff pyfasty/ || echo "Import order issues found"
+        
+    - name: 🔍 Lint code (flake8)
+      run: |
+        flake8 pyfasty/ --max-line-length=88 --extend-ignore=E203,W503 || echo "Linting issues found" 

@@ -1,0 +1,35 @@
+# Build directories
+/build/
+/dist/
+/pyfasty.egg-info/
+
+# Compiled extensions
+/pyfasty/_pyfasty.cp*.pyd
+/pyfasty/_pyfasty.cp*.so
+
+# Log files
+/test/log.txt
+/log.txt
+
+# Cache directories
+/test/__pycache__/
+/__pycache__/
+
+# Development tools (private)
+/dev-tools/
+
+# IDE and editor files
+/.vscode/
+/.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
