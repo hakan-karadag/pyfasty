@@ -56,6 +56,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'testpypi'
     
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/pyfasty
+      
+    permissions:
+      id-token: write  # Pour trusted publishing
+    
     steps:
     - name: 📥 Download artifacts
       uses: actions/download-artifact@v3
@@ -66,7 +73,6 @@ jobs:
     - name: 🧪 Publish to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         repository-url: https://test.pypi.org/legacy/
 
   publish-pypi:
@@ -94,8 +100,6 @@ jobs:
         
     - name: 🚀 Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
 
   notify-success:
     name: 🎉 Notify Success
