@@ -24,6 +24,14 @@
 
 ---
 
+## 📦 **Installation**
+
+```bash
+pip install pyfasty
+```
+
+---
+
 ## 📖 **Table des Matières**
 
 - [🎯 **Qu'est-ce que PyFasty ?**](#-quest-ce-que-pyfasty-)
@@ -131,14 +139,6 @@ console.info("App démarrée")
 </table>
 
 ## 🚀 **Démarrage Rapide**
-
-### 📦 **Installation**
-
-```bash
-pip install pyfasty
-```
-
-**C'est tout !** PyFasty est maintenant prêt à utiliser.
 
 **✅ Objets C Natifs - Import Direct**
 ```python
