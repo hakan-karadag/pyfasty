@@ -7,12 +7,12 @@ name = "pyfasty"
 version = "0.1.0b1"
 description = "🚀 Native C-powered Python utilities: magic registry, auto events, premium console - Code 10x faster!"
 readme = "README.md"
-license = {file = "license-file.txt"}
+license = {file = "LICENCE.txt"}
 authors = [
-    {name = "Hakan KARADAG", email = "hakan.karadag.dev@gmail.com"}
+    {name = "Hakan KARADAG"}
 ]
 maintainers = [
-    {name = "Hakan KARADAG", email = "hakan.karadag.dev@gmail.com"}
+    {name = "Hakan KARADAG"}
 ]
 keywords = [
     "python", "c-extension", "performance", "registry", "console", 

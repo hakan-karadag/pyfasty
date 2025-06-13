@@ -13,6 +13,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Native C](https://img.shields.io/badge/Architecture-100%25%20Native%20C-green.svg)](#-native-c-architecture)
 [![PyPI](https://img.shields.io/badge/PyPI-Published-brightgreen.svg)](https://pypi.org/project/pyfasty)
+[![Install](https://img.shields.io/badge/Install-pip%20install%20pyfasty-blue.svg)](https://pypi.org/project/pyfasty)
 [![Status](https://img.shields.io/badge/Status-Active%20Development-orange.svg)](https://github.com/hakan-karadag/pyfasty)
 
 > 🇫🇷 **[Version Française](README.fr.md)** • 🇺🇸 **English Version (Current)**

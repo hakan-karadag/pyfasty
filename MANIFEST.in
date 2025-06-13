@@ -1,7 +1,7 @@
 # Include documentation
 include README.md
 include README.fr.md
-include license-file.txt
+include LICENCE.txt
 include MANIFEST.in
 include pyproject.toml
 include setup.py
