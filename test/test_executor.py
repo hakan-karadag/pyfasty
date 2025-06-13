@@ -120,7 +120,7 @@ class class_test_executor:
         class class_dependance_test_2:
             class class_dependance_test_3:
                 def test_dependance():
-                    return pyfasty.executor.sync.class_test_executor.class_dependance_test_4.class_dependance_test_5.test_dependance()
+                    return class_test_executor.class_dependance_test_4.class_dependance_test_5.test_dependance()
     
     class class_dependance_test_4:
         class class_dependance_test_5:

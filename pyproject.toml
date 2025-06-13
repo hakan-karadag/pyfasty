@@ -7,7 +7,7 @@ name = "pyfasty"
 version = "0.1.0b1"
 description = "🚀 Native C-powered Python utilities: magic registry, auto events, premium console - Code 10x faster!"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = {file = "license-file.txt"}
 authors = [
     {name = "Hakan KARADAG", email = "hakan.karadag.dev@gmail.com"}
 ]

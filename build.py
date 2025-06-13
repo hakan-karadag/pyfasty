@@ -8,6 +8,8 @@ import sys
 import platform
 import subprocess
 from pathlib import Path
+import zipfile
+import tarfile
 
 def run_command(cmd, cwd=None):
     """Exécute une commande shell et retourne son statut"""
@@ -107,6 +109,84 @@ def check_package():
         print("✅ Ceci est cosmétique et n'empêche PAS la publication PyPI")
     return True  # Continue quand même
 
+def fix_license_metadata():
+    """Corrige automatiquement les métadonnées License-File obsolètes"""
+    print("🔧 Correction automatique des métadonnées License-File...")
+    
+    dist_path = Path("dist")
+    if not dist_path.exists():
+        return
+    
+    # Corriger le wheel
+    for wheel_file in dist_path.glob("*.whl"):
+        try:
+            with zipfile.ZipFile(wheel_file, 'r') as z:
+                metadata_path = None
+                for name in z.namelist():
+                    if name.endswith('/METADATA'):
+                        metadata_path = name
+                        break
+                
+                if metadata_path:
+                    metadata = z.read(metadata_path).decode('utf-8')
+                    lines = metadata.split('\n')
+                    clean_lines = [line for line in lines if not line.startswith('License-File:')]
+                    
+                    if len(lines) != len(clean_lines):
+                        clean_metadata = '\n'.join(clean_lines)
+                        temp_path = str(wheel_file) + '.tmp'
+                        
+                        with zipfile.ZipFile(temp_path, 'w', zipfile.ZIP_DEFLATED) as new_z:
+                            for item in z.infolist():
+                                if item.filename == metadata_path:
+                                    new_z.writestr(item, clean_metadata.encode('utf-8'))
+                                else:
+                                    new_z.writestr(item, z.read(item.filename))
+                        
+                        wheel_file.unlink()
+                        Path(temp_path).rename(wheel_file)
+                        print(f"✅ Wheel corrigé: {wheel_file.name}")
+        except Exception as e:
+            print(f"⚠️ Erreur correction wheel {wheel_file}: {e}")
+    
+    # Corriger la source distribution
+    for sdist_file in dist_path.glob("*.tar.gz"):
+        try:
+            temp_path = str(sdist_file) + '.tmp'
+            
+            with tarfile.open(sdist_file, 'r:gz') as tar_in:
+                with tarfile.open(temp_path, 'w:gz') as tar_out:
+                    for member in tar_in.getmembers():
+                        if member.name.endswith('PKG-INFO'):
+                            f = tar_in.extractfile(member)
+                            if f:
+                                content = f.read().decode('utf-8')
+                                lines = content.split('\n')
+                                clean_lines = [line for line in lines if not line.startswith('License-File:')]
+                                
+                                if len(lines) != len(clean_lines):
+                                    clean_content = '\n'.join(clean_lines)
+                                    import io
+                                    clean_bytes = clean_content.encode('utf-8')
+                                    member.size = len(clean_bytes)
+                                    tar_out.addfile(member, io.BytesIO(clean_bytes))
+                                    print(f"✅ Source distribution corrigée: {sdist_file.name}")
+                                else:
+                                    tar_out.addfile(member, f)
+                            else:
+                                tar_out.addfile(member)
+                        else:
+                            f = tar_in.extractfile(member)
+                            if f:
+                                tar_out.addfile(member, f)
+                            else:
+                                tar_out.addfile(member)
+            
+            sdist_file.unlink()
+            Path(temp_path).rename(sdist_file)
+        except Exception as e:
+            print(f"⚠️ Erreur correction sdist {sdist_file}: {e}")
+
 def test_import():
     """Teste l'import du package"""
     print("=== Test d'import ===")
@@ -166,7 +246,10 @@ def main():
         print("❌ Erreur lors de la création des distributions")
         return 1
     
-    # Étape 8: Vérification package
+    # Étape 8: Correction métadonnées
+    fix_license_metadata()
+    
+    # Étape 9: Vérification package
     check_package()
     
     print("\n🎉 BUILD RÉUSSI !")
