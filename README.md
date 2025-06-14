@@ -311,6 +311,8 @@ def start_api_server():
 
 ### 🖥️ **Premium Console** - Logging Done Right
 
+![Console Render](assets/console-render.png)
+
 ```python
 # ⚡ Direct import of native C objects
 from pyfasty import console

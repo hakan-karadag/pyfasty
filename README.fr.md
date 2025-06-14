@@ -311,6 +311,8 @@ def demarrer_serveur_api():
 
 ### 🖥️ **Console Premium** - Logging Fait Correctement
 
+![Rendu Console](assets/console-render.png)
+
 ```python
 # ⚡ Import direct des objets C natifs
 from pyfasty import console
